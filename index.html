@@ -61,14 +61,19 @@
     </div>
 
     <script>
-        // Fonction pour extraire les paramètres de l'URL
-        function getParameterByName(name, url = window.location.href) {
-            name = name.replace(/[\[\]]/g, '\\$&');
-            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-                results = regex.exec(url);
-            if (!results) return null;
-            if (!results[2]) return '';
-            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        // Fonction pour extraire le code d'événement du chemin URL
+        function getEventCodeFromPath() {
+            var path = window.location.pathname;
+            var pathParts = path.split('/');
+            
+            // Vérifier si le chemin est de la forme /invite/CODE
+            if (pathParts.length >= 3 && pathParts[1] === 'invite') {
+                return pathParts[2];
+            }
+            
+            // Ancienne méthode: chercher dans les paramètres d'URL
+            var urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('code');
         }
         
         document.addEventListener('DOMContentLoaded', function() {
@@ -76,8 +81,8 @@
             var storeLink = document.getElementById('storeLink');
             var openAppBtn = document.getElementById('openApp');
             
-            // Récupérer le code d'événement de l'URL
-            var eventCode = getParameterByName('code');
+            // Récupérer le code d'événement du chemin de l'URL
+            var eventCode = getEventCodeFromPath();
             console.log('Code événement détecté:', eventCode);
             
             // Construire l'URL du deep link avec le code si disponible
